@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employees</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+<form class="form_class" method="get">
+    <h2 class="elem"> Search </h2>
+    <h4 class="elem"> DATE FROM </h4>
+    <input class="elem" name="search_from" type="date" value="1996-11-10">
+    <h4 class="elem">DATE TO</h4>
+    <input class="elem" name="search_to" type="date"><br>
+    <input class="elem" type="submit" value="Search" >
+</form>
+
+<div class="content">
+    <span style="">Page: 1 from 1</span>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>NAME
+                <a href="">↑</a>
+                <a href="">↓</a>
+            </th>
+
+            <th>BIRTHDATE
+                <a href="">↑</a>
+                <a href="">↓</a>
+            </th>
+
+            <th>DEPARTMENT
+                <a href="">↑</a>
+                <a href="">↓</a>
+            </th>
+            <th>SALARY
+                <a href="">↑</a>
+                <a href="">↓</a>
+            </th>
+            <th>ACTIONS</th>
+
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Dima Cherenkov</td>
+            <td>1996-10-11</td>
+            <td>Python Dev</td>
+            <td>2000</td>
+            <td>
+                <a href="">Profile</a><br>
+                <a href="">Delete</a>
+            </td>
+
+        </tr>
+
+
+    </table>
+
+    <span style="margin: 10px; padding: 10px; font-size: large">
+
+        Pages:
+        <a href="">Previous</a>
+        <span style="padding: 10px">
+            <a href="">1</a>
+            ...
+            <a href="">1</a>
+        </span>
+        <a href="">Next</a>
+
+    </span>
+</div>
+
+</body>
+</html>
