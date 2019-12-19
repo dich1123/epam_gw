@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% include 'header.html' %}
+
+{% include 'show_flashes.html' %}
+
+<form method="post">
+    <div class="profile" >
+        <h1 class="profile_lines">Name: <input class="profile_input" type="text" name="name" value="{{ employee['name'] }}"></h1>
+        <h3 class="profile_lines">Birthdate: <br> <input class="profile_input" type="date" name="birthdate" value="{{ employee['birthdate'] }}"></h3>
+        <h3 class="profile_lines">Department: <select name="department">
+            <option class="option_dep">{{employee['department']}}</option>
+            {% for id in departments %}
+                {% if employee['department'] != departments[id]['department'] %}
+                    <option class="option_dep">{{ departments[id]['department'] }}</option>
+                {% endif %}
+            {% endfor %}
+        </select> </h3>
+        <h3 class="profile_lines">Salary: <input class="profile_input" type="text" name="salary" value="{{ employee['salary'] }}"></h3>
+        <input class="profile_lines" type="submit" value="CHANGE">
+        <a class="profile_lines" href="/delete/{{ employee['id'] }}">DELETE</a>
+
+    </div>
+
+</form>
+
+</body>
+</html>

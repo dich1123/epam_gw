@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% include 'header.html' %}
+
+{% include 'show_flashes.html' %}
+
+<form method="post">
+    <div class="profile" >
+        <h1 class="profile_lines">Name: <input class="profile_input" type="text" name="name" ></h1>
+        <h3 class="profile_lines">Birthdate:<br> <input class="profile_input" type="date" name="birthdate" ></h3>
+        <h3 class="profile_lines">Department: <select name="department">
+            {% for id in departments %}
+                <option class="option_dep">{{ departments[id]['department'] }}</option>
+
+            {% endfor %}
+        </select>
+
+        </h3>
+        <h3 class="profile_lines">Salary: <input class="profile_input" type="text" name="salary"></h3>
+        <input class="profile_lines" type="submit" value="ADD">
+    </div>
+
+</form>
+
+</body>
+</html>

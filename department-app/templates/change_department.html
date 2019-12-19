@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% include 'header.html' %}
+{% include 'show_flashes.html' %}
+
+<form method="post">
+    <div class="profile add_dep" >
+        <h1 class="profile_lines">Input department name:
+            <input class="profile_input" type="text" name="content" value="{{ department }}"></h1>
+        <input class="profile_lines" type="submit" value="CHANGE">
+
+    </div>
+
+</form>
+
+</body>
+</html>

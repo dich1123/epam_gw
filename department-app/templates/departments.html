@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Departments</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="content">
+    <table>
+        <tr>
+            <th>id</th>
+            <th>DEPARTMENT</th>
+            <th>AVERAGE SALARY</th>
+            <th>ACTIONS</th>
+        </tr>
+
+        {% for id in departments.keys() %}
+
+            <tr>
+                <td>{{ id }}</td>
+                <td>{{ departments[id]['department'] }}</td>
+                <td>{{ departments[id]['average_salary'] }}</td>
+                <td><a href="{{ url_for('departments', delete=1, id=id) }}">Delete</a><br>
+                    <a href="{{ url_for('change_department', id=id) }}">Change</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+
+
+
+    </table>
+</div>
+</body>
+</html>

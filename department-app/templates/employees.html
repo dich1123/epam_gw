@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employees</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+
+{% include 'header.html' %}
+
+{% if request.args.get('page') is sameas none %}
+    {% set previous_link = 1 %}
+{% elif request.args.get('page')|int -1 < 1 %}
+    {% set previous_link = 1 %}
+{% else %}
+    {% set previous_link = request.args.get('page')|int -1 %}
+{% endif %}
+
+{% if request.args.get('page') is sameas none %}
+    {% set next_link = 2 %}
+{% elif request.args.get('page')|int + 1 > count_req//30+1 %}
+    {% set next_link = count_req//30+1 %}
+{% else %}
+    {% set next_link = request.args.get('page')|int + 1 %}
+{% endif %}
+
+{% if request.args.get('page') is sameas none %}
+    {% set this_page = 1 %}
+{% else %}
+    {% set this_page = request.args.get('page') %}
+{% endif %}
+
+<form class="form_class" method="get">
+    <h2 class="elem"> Search </h2>
+    <h4 class="elem"> DATE FROM </h4>
+    <input class="elem" name="search_from" type="date" value="1996-11-10">
+    <h4 class="elem">DATE TO</h4>
+    <input class="elem" name="search_to" type="date"><br>
+    <input class="elem" type="submit" value="Search" >
+</form>
+{% if count_req > 0 %}
+<div class="content">
+    <span style="">Page: {{ this_page }} from {{ count_req//30+1 }}</span>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>NAME
+                <a href="{{ url_for('employees',page=request.args.get('page'), sort='name_up',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↑</a>
+                <a href="{{ url_for('employees',page=request.args.get('page'), sort='name_down',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↓</a>
+            </th>
+
+            <th>BIRTHDATE
+                <a href="{{ url_for('employees',page=request.args.get('page'), sort='birth_up',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↑</a>
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort='birth_down',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↓</a>
+            </th>
+
+            <th>DEPARTMENT
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort='dep_up',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↑</a>
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort='dep_down',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↓</a>
+            </th>
+            <th>SALARY
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort='sal_up',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↑</a>
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort='sal_down',
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">↓</a>
+            </th>
+            <th>ACTIONS</th>
+
+        </tr>
+    {% for dict in employees %}
+        <tr>
+            <td>{{ dict['id'] }}</td>
+            <td>{{ dict['name'] }}</td>
+            <td>{{ dict['birthdate'] }}</td>
+            <td>{{ dict['department'] }}</td>
+            <td>{{ dict['salary'] }}</td>
+            <td>
+                <a href="/profile/{{ dict['id'] }}">Profile</a><br>
+                <a href="{{ url_for('employees', page=request.args.get('page'), sort=request.args.get('sort'),
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to'),
+                  delete=1, id=dict['id']) }}">Delete</a>
+            </td>
+
+        </tr>
+
+    {% endfor %}
+    </table>
+
+    <span style="margin: 10px; padding: 10px; font-size: large">
+
+        Pages:
+        <a href="{{ url_for('employees', page=previous_link, sort=request.args.get('sort'),
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">Previous</a>
+        <span style="padding: 10px">
+            <a href="{{ url_for('employees',page='1', sort=request.args.get('sort'),
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">1</a>
+            ...
+            <a href="{{ url_for('employees', page=count_req//30+1, sort=request.args.get('sort'),
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">{{ count_req // 30 +1 }}</a>
+        </span>
+        <a href="{{ url_for('employees', page=next_link, sort=request.args.get('sort'),
+                 search_from=request.args.get('search_from'), search_to=request.args.get('search_to')) }}">Next</a>
+
+    </span>
+</div>
+{% endif %}
+
+</body>
+</html>

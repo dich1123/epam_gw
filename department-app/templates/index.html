@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DiCh</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+</head>
+<body>
+
+{% include 'header.html' %}
+
+<div class="div_photo">
+    <img class="photo" src="{{ url_for('static', filename='pictures/me.png') }}">
+</div>
+
+<div class="hi_text">
+    <h3 style="padding: 10px 10px 0px 10px">
+        Hi! It's me! And all this is my GW! Enjoy!
+    </h3>
+    <h5 style="padding: 0px 0px 10px">
+        __FROM_DICH_WITH_LOVE__
+    </h5>
+</div>
+
+</body>
+</html>
