@@ -4,7 +4,23 @@ sys.path.insert(0, '../')
 import dbmodels
 from flask_restful import Api, Resource, reqparse
 from flask import request, jsonify
-import datetime
+import logging
+
+logger = logging.getLogger('db_operations')
+logger.setLevel(logging.INFO)
+
+handler = logging.FileHandler('../logger_db_operations.log')
+handler.setLevel(logging.ERROR)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+handler2 = logging.StreamHandler()
+handler2.setLevel(logging.INFO)
+handler2.setFormatter(formatter)
+
+logger.addHandler(handler)
+logger.addHandler(handler2)
+logger.info('rest_db_operations works')
 
 db = dbmodels.db
 app = dbmodels.app
@@ -71,6 +87,7 @@ class EmployeesList(Resource):
             dict_info['employees'].append({'id': str(i.id), 'name': i.name, 'birthdate': str(i.birthdate),
                                'salary': i.salary, 'department': i.department})
         dict_info['count_req'] = count_req
+        logger.info('EmployeeList GET: DONE')
 
         return jsonify(dict_info)
 
@@ -83,6 +100,7 @@ class DepartmentsList(Resource):
         dict_info = {}
         for i in info:
             dict_info[str(i.id)] = {'department': i.department, 'average_salary': str(i.average_salary)}
+        logger.info('DepartmentsList GET: DONE')
         return jsonify(dict_info)
 
 
@@ -91,6 +109,7 @@ class EmployeeProfile(Resource):
         employee = dbmodels.Employee.query.get_or_404(id)
         dict_info = {'id': str(employee.id), 'name': employee.name, 'birthdate': str(employee.birthdate),
                                'salary': employee.salary, 'department': employee.department}
+        logger.info('EmployeeProfile GET: DONE')
         return jsonify(dict_info)
 
     def post(self, id):
@@ -103,9 +122,10 @@ class EmployeeProfile(Resource):
 
         try:
             db.session.commit()
+            logger.info('EmployeeProfile POST: DONE')
             return '', 201
         except:
-            print('There were troubles with updating profile')
+            logger.error('EmployeeProfile POST: FAILED')
             return '', 500
 
     def delete(self, id):
@@ -114,9 +134,10 @@ class EmployeeProfile(Resource):
         try:
             db.session.delete(employee)
             db.session.commit()
+            logger.info('EmployeeProfile DELETE: DONE')
             return '', 204
         except:
-            print('There were troubles with deleting employee')
+            logger.error('EmployeeProfile DELETE: FAILED')
             return '', 500
 
     def put(self, id):
@@ -126,9 +147,10 @@ class EmployeeProfile(Resource):
         try:
             db.session.add(new_employee)
             db.session.commit()
+            logger.info('EmployeeProfile PUT: DONE')
             return '', 200
         except:
-            print('There were troubles with adding employee')
+            logger.error('EmployeeProfile PUT: FAILED')
             return '', 500
 
 
@@ -136,6 +158,7 @@ class DepartmentProfile(Resource):
     def get(self, id):  # read profile
         department = dbmodels.Department.query.get_or_404(id)
         dict_info = {str(department.id): {'department': department.department}}
+        logger.info('DepartmentProfile GET: DONE')
         return jsonify(dict_info)
 
     def post(self, id):  # change profile info
@@ -145,9 +168,10 @@ class DepartmentProfile(Resource):
 
         try:
             db.session.commit()
+            logger.info('DepartmentProfile POST: DONE')
             return '', 201
         except:
-            print('There were troubles with updating department')
+            logger.error('DepartmentProfile POST: FAILED')
             return '', 500
 
     def delete(self, id):  # delete profile
@@ -156,10 +180,11 @@ class DepartmentProfile(Resource):
         try:
             db.session.delete(department)
             db.session.commit()
+            logger.info('DepartmentProfile DELETE: DONE')
             return '', 204
         except:
-            print('There were troubles with deleting department in table')
-            return None, 500
+            logger.error('DepartmentProfile DELETE: FAILED')
+            return '', 500
 
     def put(self, id):  # create new profile
         args = parser.parse_args()
@@ -168,9 +193,10 @@ class DepartmentProfile(Resource):
         try:
             db.session.add(new_department)
             db.session.commit()
+            logger.info('DepartmentProfile PUT: DONE')
             return '', 200
         except:
-            print('There were troubles with adding department')
+            logger.error('DepartmentProfile PUT: FAILED')
             return '', 500
 
 
