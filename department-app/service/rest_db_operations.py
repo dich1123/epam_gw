@@ -6,6 +6,9 @@ from flask_restful import Api, Resource, reqparse
 from flask import request, jsonify
 import logging
 
+# to run gunicorn gunicorn --bind 0.0.0.0:5000 wsgi:app
+
+""" Creating and setting logs variables"""
 logger = logging.getLogger('db_operations')
 logger.setLevel(logging.INFO)
 
@@ -22,6 +25,7 @@ logger.addHandler(handler)
 logger.addHandler(handler2)
 logger.info('rest_db_operations works')
 
+"""Creating Flask variables"""
 db = dbmodels.db
 app = dbmodels.app
 api = Api(app)
@@ -35,6 +39,14 @@ parser.add_argument('department')
 
 
 def create_search_and_amount_query_employees(sort, page, search_from, search_to):
+    """
+
+    :param sort:sorting parameters (for date, names etc) for example: 'name_up'; 'name_down'; 'birth_up' etc
+    :param page: page number (returns for 30 elements in one page)
+    :param search_from: date from when start to search employees via birth dates
+    :param search_to: date until when  search employees via birth dates
+    :return: search queries for EmployeesList
+    """
     sorts = {'name_up': 'name', 'name_down': 'name  DESC', 'birth_up': 'birthdate', 'birth_down': 'birthdate DESC',
              'dep_up': 'department', 'dep_down': 'department DESC', 'sal_up': 'salary', 'sal_down': 'salary DESC'}
 
@@ -69,7 +81,14 @@ def create_search_and_amount_query_employees(sort, page, search_from, search_to)
 
 
 class EmployeesList(Resource):
+    """
+    All actions with EmployeesList (Employees tab in app)
+    """
     def get(self):
+        """
+
+        :return: json with employees(list with dicts) and count_req(int)-how many employees in query
+        """
         sort = request.args.get('sort')
         page = request.args.get('page')
         search_from = request.args.get('search_from')
@@ -93,7 +112,14 @@ class EmployeesList(Resource):
 
 
 class DepartmentsList(Resource):
+    """
+    All actions with DepartmentList (Departments tab in app)
+    """
     def get(self):
+        """
+
+        :return: JSON with departments, where keys - unique id, values - dicts with data
+        """
         info = db.engine.execute("select id, department, (select avg(salary) from employee where "
                                  "employee.department = department.department) average_salary from department;")
 
@@ -105,14 +131,17 @@ class DepartmentsList(Resource):
 
 
 class EmployeeProfile(Resource):
-    def get(self, id):
+    """
+    All actions with employee's profile
+    """
+    def get(self, id):  # read profile
         employee = dbmodels.Employee.query.get_or_404(id)
         dict_info = {'id': str(employee.id), 'name': employee.name, 'birthdate': str(employee.birthdate),
                                'salary': employee.salary, 'department': employee.department}
         logger.info('EmployeeProfile GET: DONE')
         return jsonify(dict_info)
 
-    def post(self, id):
+    def post(self, id):  # change profile info
         args = parser.parse_args()
         employee = dbmodels.Employee.query.get_or_404(args['id'])
         employee.name = args['name']
@@ -128,7 +157,7 @@ class EmployeeProfile(Resource):
             logger.error('EmployeeProfile POST: FAILED')
             return '', 500
 
-    def delete(self, id):
+    def delete(self, id):  # delete profile
         employee = dbmodels.Employee.query.get_or_404(id)
 
         try:
@@ -140,7 +169,7 @@ class EmployeeProfile(Resource):
             logger.error('EmployeeProfile DELETE: FAILED')
             return '', 500
 
-    def put(self, id):
+    def put(self, id):  # create new profile
         args = parser.parse_args()
         new_employee = dbmodels.Employee(args['name'], args['birthdate'], args['salary'], args['department'])
 
@@ -208,5 +237,3 @@ api.add_resource(DepartmentProfile, '/api_department_profile/<int:id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# http://127.0.0.1:5008/employees?page=1&search_from=1996-11-10&search_to=2019-12-18

@@ -16,6 +16,9 @@ manager.add_command('db', MigrateCommand)
 
 
 class Department(db.Model):
+    """
+    Department module for DB
+    """
     id = db.Column('id', db.Integer, primary_key=True)
     department = db.Column('department', db.String(100), unique=True, nullable=False)
 
@@ -27,6 +30,9 @@ class Department(db.Model):
 
 
 class Employee(db.Model):
+    """
+    Employee model for DB
+    """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     birthdate = db.Column(db.Date, nullable=False)

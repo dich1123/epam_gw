@@ -18,7 +18,11 @@
 {% endif %}
 
 {% if request.args.get('page') is sameas none %}
-    {% set next_link = 2 %}
+    {% if count_req//30+1 == 1 %}
+        {% set next_link = 1 %}
+    {% else %}
+        {% set next_link = 2 %}
+    {% endif %}
 {% elif request.args.get('page')|int + 1 > count_req//30+1 %}
     {% set next_link = count_req//30+1 %}
 {% else %}

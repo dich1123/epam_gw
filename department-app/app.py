@@ -6,17 +6,24 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = 'dahfygjsknlmca;dkfvla'
 db = SQLAlchemy(app)
-api_host_name = 'http://127.0.0.1:5000'
+api_host_name = 'http://0.0.0.0:5010/'
 
 
 @app.route('/')
 def index():
-    global employees_amount
+    """
+
+    :return: index page(start page)
+    """
     return render_template('index.html')
 
 
 @app.route('/employees', methods=['GET', 'POST'])
 def employees():
+    """
+
+    :return: Employees with search and sort options
+    """
 
     sort = request.args.get('sort')
     page = request.args.get('page')
@@ -25,7 +32,6 @@ def employees():
 
     if request.args.get('delete'):
         id = request.args.get('id')
-        print('idididididiidididididi', id)
         r = requests.delete(api_host_name + '/api_employee_profile/' + str(id))
         return redirect(url_for('employees', sort=sort, page=page, search_from=search_from, search_to=search_to))
 
@@ -39,7 +45,12 @@ def employees():
 
 
 @app.route('/profile/<int:id>', methods=['GET', 'POST'])
-def profile(id):  # you can update info here
+def profile(id):  # you can update data here
+    """
+
+    :param id: unique employee id
+    :return: employee's profile
+    """
     employee = requests.get(api_host_name + '/api_employee_profile/' + str(id))
     departments_all = requests.get(api_host_name + '/api_departments_list')
     employee = employee.json()
@@ -67,12 +78,21 @@ def profile(id):  # you can update info here
 
 @app.route('/delete/<int:id>')
 def delete(id):
+    """
+
+    :param id: unique employee's id
+    :return: redirect to Employees
+    """
     r = requests.delete(api_host_name + '/api_employee_profile/' + str(id))
     return redirect(url_for('employees'))
 
 
 @app.route('/departments')
 def departments():
+    """
+
+    :return: Departments with delete and upgrade facilities
+    """
     if request.args.get('delete'):
         id = request.args.get('id')
         r = requests.delete(api_host_name + '/api_department_profile/' + str(id))
@@ -86,6 +106,10 @@ def departments():
 
 @app.route('/add_department', methods=['GET', 'POST'])
 def add_department():
+    """
+
+    :return: form for creating new department
+    """
     if request.method == 'POST':
         department = request.form['content']
         print([department])
@@ -103,6 +127,10 @@ def add_department():
 
 @app.route('/add_employee', methods=['GET', 'POST'])
 def add_employee():
+    """
+
+    :return: form for creating new employee
+    """
     departments_all = requests.get(api_host_name + '/api_departments_list')
     departments_all = departments_all.json()
 
@@ -126,6 +154,11 @@ def add_employee():
 
 @app.route('/change_department/<int:id>', methods=['POST', 'GET'])
 def change_department(id):
+    """
+
+    :param id: department's unique id
+    :return: form for upgrading department
+    """
     department = requests.get(api_host_name + '/api_department_profile/' + str(id))
     dict_department = json.loads(department.text)
 
@@ -145,4 +178,4 @@ def change_department(id):
 
 
 if __name__ == '__main__':
-    app.run(port=5008, debug=True)
+    app.run(port=5009, debug=True)
