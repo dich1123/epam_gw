@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 from flask import Flask, render_template, request, url_for, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 
@@ -32,7 +32,7 @@ def employees():
 
     if request.args.get('delete'):
         id = request.args.get('id')
-        r = requests.delete(api_host_name + '/api_employee_profile/' + str(id))
+        requests.delete(api_host_name + '/api_employee_profile/' + str(id))
         return redirect(url_for('employees', sort=sort, page=page, search_from=search_from, search_to=search_to))
 
     info = requests.get(api_host_name + '/api_employees_list',
@@ -68,8 +68,8 @@ def profile(id):  # you can update data here
             flash('All forms must be filled')
             return redirect(url_for('profile', id=id))
 
-        r = requests.post(api_host_name + '/api_employee_profile/' + str(id),
-                          {'id': id, 'name': name, 'birthdate': birthdate, 'salary': salary, 'department': department})
+        requests.post(api_host_name + '/api_employee_profile/' + str(id),
+                      {'id': id, 'name': name, 'birthdate': birthdate, 'salary': salary, 'department': department})
 
         return redirect(url_for('employees'))
     else:
@@ -83,7 +83,7 @@ def delete(id):
     :param id: unique employee's id
     :return: redirect to Employees
     """
-    r = requests.delete(api_host_name + '/api_employee_profile/' + str(id))
+    requests.delete(api_host_name + '/api_employee_profile/' + str(id))
     return redirect(url_for('employees'))
 
 
@@ -95,7 +95,7 @@ def departments():
     """
     if request.args.get('delete'):
         id = request.args.get('id')
-        r = requests.delete(api_host_name + '/api_department_profile/' + str(id))
+        requests.delete(api_host_name + '/api_department_profile/' + str(id))
         return redirect(url_for('departments'))
 
     info = requests.get(api_host_name + '/api_departments_list')
@@ -114,12 +114,11 @@ def add_department():
         department = request.form['content']
         print([department])
 
-        if '' == department:
+        if not department:
             flash('All forms must be filled')
             return render_template('add_department.html')
 
-        r = requests.put(api_host_name + '/api_department_profile/0', json={'department': department})
-        print(r)
+        requests.put(api_host_name + '/api_department_profile/0', json={'department': department})
         return redirect(url_for('departments'))
 
     return render_template('add_department.html')
@@ -145,8 +144,8 @@ def add_employee():
             flash('All forms must be filled')
             return render_template('add_employee.html', departments=departments_all)
 
-        r = requests.put(api_host_name + '/api_employee_profile/0',
-                         {'name': name, 'birthdate':birthdate, 'salary': salary, 'department': department})
+        requests.put(api_host_name + '/api_employee_profile/0',
+                     {'name': name, 'birthdate':birthdate, 'salary': salary, 'department': department})
         return redirect(url_for('employees'))
 
     return render_template('add_employee.html', departments=departments_all)
@@ -165,12 +164,12 @@ def change_department(id):
     if request.method == 'POST':
         department_info = request.form['content']
 
-        if '' == department_info:
+        if not department_info:
             flash('All forms must be filled')
             return redirect(url_for('change_department', id=id))
 
-        r = requests.post(api_host_name + '/api_department_profile/' + str(id),
-                          {'id': id, 'department': department_info})
+        requests.post(api_host_name + '/api_department_profile/' + str(id),
+                      {'id': id, 'department': department_info})
 
         return redirect(url_for('departments'))
 
